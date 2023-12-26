@@ -135,9 +135,9 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
   treat_missing_data = "missing"
 }
 
-resource "aws_instance" "imported" {
+# resource "aws_instance" "imported" {
   
-}
+# }
 
 
 
