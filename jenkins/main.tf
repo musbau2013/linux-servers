@@ -33,14 +33,35 @@ resource "aws_iam_role" "ec2_role" {
   # Attach an inline policy to grant sns:Publish permission for the specific SNS topic
   inline_policy {
     name = "sns_publish_policy"
-    
+
     policy = jsonencode({
       Version = "2012-10-17",
       Statement = [
         {
-          Action = "sns:Publish",
-          Effect = "Allow",
+          Action   = "sns:Publish",
+          Effect   = "Allow",
           Resource = aws_sns_topic.disk_space_topic.arn
+        }
+      ]
+    })
+  }
+
+  # Attach an inline policy to allow CloudWatch Logs access
+  inline_policy {
+    name = "cloudwatch_logs_policy"
+
+    policy = jsonencode({
+      Version = "2012-10-17",
+      Statement = [
+        {
+          Action = [
+            "logs:CreateLogGroup",
+            "logs:CreateLogStream",
+            "logs:PutLogEvents",
+            "logs:DescribeLogStreams"
+          ],
+          Effect   = "Allow",
+          Resource = "*"
         }
       ]
     })
@@ -56,16 +77,37 @@ resource "aws_iam_policy_attachment" "ec2_sns_policy_attachment" {
 
 # Create an IAM instance profile
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_sns_publish_instance_profile"
+  name = "ec2_sns_publish_instance_profile1"
   role = aws_iam_role.ec2_role.name
+}
+
+data "aws_ami" "example" {
+  most_recent = true
+  # owners           = ["self"]
+
+  filter {
+    name   = "name"
+    values = ["ubuntu/images/hvm-ssd/ubuntu-jammy-22.04-amd64-server-*"]
+  }
+
+  filter {
+    name   = "virtualization-type"
+    values = ["hvm"]
+  }
+  owners = ["099720109477"]
 }
 
 # Create an EC2 instance with the IAM instance profile
 resource "aws_instance" "example_instance" {
-  ami                  = "ami-0fc5d935ebf8bc3bc" # Replace with your desired AMI ID
-  instance_type        = "t2.micro"
-  key_name             = "newkey"                                           # Replace with your key pair name
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name # Attach the IAM instance profile to the EC2 instance
+  ami                  = data.aws_ami.example.id
+  instance_type        = "t2.medium"
+  key_name             = "keypair"
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  tags = {
+    Name = "prometheus_monitoring"
+  }
+  
+
 }
 
 # Create an SNS topic for notifications
@@ -89,7 +131,7 @@ resource "aws_cloudwatch_metric_alarm" "cpu_utilization_alarm" {
   namespace           = "AWS/EC2"
   period              = 60
   statistic           = "Average"
-  threshold           = 20 # Set your desired threshold for high CPU utilization
+  threshold           = 20
   alarm_description   = "Alarm when CPU utilization exceeds 20%"
   alarm_actions       = [aws_sns_topic.disk_space_topic.arn]
   dimensions = {
@@ -106,13 +148,12 @@ resource "aws_cloudwatch_metric_alarm" "disk_space_alarm" {
   namespace           = "CWAgent"
   period              = 60
   statistic           = "Average"
-  threshold           = 35 # Set your desired threshold (e.g., 10% free space)
+  threshold           = 35
   alarm_description   = "Alarm when disk space utilization exceeds 35%"
   alarm_actions       = [aws_sns_topic.disk_space_topic.arn]
   dimensions = {
     InstanceId = aws_instance.example_instance.id
   }
-
   treat_missing_data = "missing"
 }
 
@@ -125,19 +166,25 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
   namespace           = "CWAgent"
   period              = 60
   statistic           = "Average"
-  threshold           = 15 # Set your desired threshold for high memory utilization
+  threshold           = 15
   alarm_description   = "Alarm when memory utilization exceeds 15%"
   alarm_actions       = [aws_sns_topic.disk_space_topic.arn]
   dimensions = {
     InstanceId = aws_instance.example_instance.id
   }
-
   treat_missing_data = "missing"
 }
 
-# resource "aws_instance" "imported" {
-  
-# }
+resource "aws_cloudwatch_log_group" "example_log_group" {
+  name              = "example-log-group" # Replace with your desired log group name
+  retention_in_days = 7                   # Set the desired retention period (in days)
+}
 
+resource "aws_eip" "lb" {
+  instance = aws_instance.example_instance.id
+  domain   = "vpc"
+}
 
+##### API key for TMDB -   0069e2129562051768f17165f47d5d16
 
+# docker build --build-arg TMDB_V3_API_KEY=0069e2129562051768f17165f47d5d16 -t netflix .
