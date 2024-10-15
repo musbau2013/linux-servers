@@ -14,6 +14,7 @@ terraform {
 }
 
 # Create an IAM role for the EC2 instance
+## gfhgjghij
 resource "aws_iam_role" "ec2_role" {
   name = "ec2_sns_publish_role"
 
