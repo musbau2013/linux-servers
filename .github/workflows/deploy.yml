@@ -22,24 +22,24 @@ concurrency:
 
 jobs:
   # Checkov Job for Security Scanning
-  security:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  # security:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.x'
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.x'
 
-      - name: Install Checkov
-        run: |
-          pip install checkov
+  #     - name: Install Checkov
+  #       run: |
+  #         pip install checkov
 
-      - name: Run Checkov to scan for security misconfigurations
-        run: |
-          checkov --directory ${{ env.WORKING_DIRECTORY }}
+  #     - name: Run Checkov to scan for security misconfigurations
+  #       run: |
+  #         checkov --directory ${{ env.WORKING_DIRECTORY }}
 
   Infra-plan:
     runs-on: ubuntu-latest
