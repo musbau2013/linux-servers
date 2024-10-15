@@ -45,7 +45,7 @@ jobs:
 
   Infra-plan:
     runs-on: ubuntu-latest
-    if:  startsWith(github.ref, 'refs/heads/feature-')
+    if: github.event_name == 'push'
     # needs: [security]
     steps:
       # - name: Add Sherwin CA certificates
@@ -118,8 +118,8 @@ jobs:
   # Manual approval and apply job
   apply:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true  && github.ref == 'refs/heads/master'
-    needs: [Infra-plan]
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+    needs: Infra-plan
     steps:
       # ####- name: Manual Approval
       #   uses: trstringer/manual-approval@v1
