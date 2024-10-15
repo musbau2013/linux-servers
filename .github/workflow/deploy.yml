@@ -15,7 +15,7 @@ permissions:
   issues: write
 
 env:
-  WORKING_DIRECTORY: ./opensearch/environment/prod
+  WORKING_DIRECTORY: ./jenkins
 
 concurrency:
   group: ${{ github.workflow }}
