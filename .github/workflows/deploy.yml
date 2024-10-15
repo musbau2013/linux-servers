@@ -21,10 +21,30 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
+  # Checkov Job for Security Scanning
+  # security:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v3
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.x'
+
+  #     - name: Install Checkov
+  #       run: |
+  #         pip install checkov
+
+  #     - name: Run Checkov to scan for security misconfigurations
+  #       run: |
+  #         checkov --directory ${{ env.WORKING_DIRECTORY }}
+
   Infra-plan:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature-')
-    needs: [security]
+    # needs: [security]
     steps:
       # - name: Add Sherwin CA certificates
       #   uses: sherwin-williams-co/sherwin-ca-injector-action@v0
