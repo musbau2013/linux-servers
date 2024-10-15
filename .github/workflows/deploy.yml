@@ -116,7 +116,7 @@ jobs:
   # Manual approval and apply job
   apply:
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true && github.ref == 'refs/heads/master'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true # && github.ref == 'refs/heads/master'
     # needs: [Infra-plan]
     steps:
       # ####- name: Manual Approval
