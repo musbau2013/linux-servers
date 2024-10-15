@@ -17,7 +17,7 @@ permissions:
   issues: write
 
 env:
-  WORKING_DIRECTORY: ./jenkins/
+  WORKING_DIRECTORY: ./jenkins
 
 concurrency:
   group: ${{ github.workflow }}
@@ -119,7 +119,7 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true  && github.ref == 'refs/heads/master'
-    # needs: [Infra-plan]
+    needs: [Infra-plan]
     steps:
       # ####- name: Manual Approval
       #   uses: trstringer/manual-approval@v1
