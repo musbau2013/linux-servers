@@ -118,7 +118,7 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     # if: github.event_name == 'pull_request' && github.event.action == 'merged' && github.event.pull_request.merged == true
-    if: github.event_name == 'pull_request' && github.event.action == 'merged'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
     needs: Infra-plan
     steps:
       # ####- name: Manual Approval
