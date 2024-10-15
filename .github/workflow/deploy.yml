@@ -3,7 +3,7 @@ name: Terraform Workflow
 on:
   push:
     branches:
-      - features-*
+      - feature-*
   pull_request:
     branches:
       - master
@@ -43,7 +43,7 @@ jobs:
 
   Infra-plan:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/features-')
+    if: github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/heads/feature-')
     needs: [security]
     steps:
       # - name: Add Sherwin CA certificates
