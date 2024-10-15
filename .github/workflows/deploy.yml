@@ -118,9 +118,15 @@ jobs:
   apply:
     runs-on: ubuntu-latest
     # if: github.event_name == 'pull_request' && github.event.action == 'merged' && github.event.pull_request.merged == true
-    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    #if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     needs: Infra-plan
     steps:
+      - name: Debug event
+        run: |
+          echo "Event Name: $GITHUB_EVENT_NAME"
+          echo "Event Action: $GITHUB_EVENT_ACTION"
+          echo "PR Merged: $GITHUB_EVENT_PULL_REQUEST_MERGED"
       # ####- name: Manual Approval
       #   uses: trstringer/manual-approval@v1
       #   with:
