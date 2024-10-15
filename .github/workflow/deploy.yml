@@ -3,7 +3,7 @@ name: Terraform Workflow
 on:
   push:
     branches:
-      - featuress-*
+      - features-*
   pull_request:
     branches:
       - master
@@ -15,7 +15,7 @@ permissions:
   issues: write
 
 env:
-  WORKING_DIRECTORY: ./jenkins
+  WORKING_DIRECTORY: ./jenkins/
 
 concurrency:
   group: ${{ github.workflow }}
