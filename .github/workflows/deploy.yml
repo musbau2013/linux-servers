@@ -18,7 +18,7 @@ permissions:
   issues: write
 
 env:
-  WORKING_DIRECTORY: ./jenkins
+  WORKING_DIRECTORY: ./
 
 concurrency:
   group: ${{ github.workflow }}
@@ -68,7 +68,7 @@ jobs:
       - name: Render terraform docs inside the README.md and push changes back to PR branch
         uses: terraform-docs/gh-actions@v1.3.0
         with:
-          working-dir: ${{ env.WORKING_DIRECTORY }}, ./monitoring
+          working-dir: ${{ env.WORKING_DIRECTORY }}, ./modules/ec2, ./modules/monitoring
           output-file: README.md
           output-method: inject
           git-push: "true"
