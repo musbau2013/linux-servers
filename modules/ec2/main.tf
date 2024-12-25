@@ -39,7 +39,7 @@
   # }
 
   # Attach an inline policy to allow CloudWatch Logs access
-}
+# }
 
 # Attach the AmazonSNSFullAccess policy to the IAM role (for SNS publishing permissions)
 # resource "aws_iam_policy_attachment" "ec2_sns_policy_attachment" {
