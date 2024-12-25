@@ -6,53 +6,53 @@
 
 # Create an IAM role for the EC2 instance
 ## gfhgjghij
-resource "aws_iam_role" "ec2_role" {
-  name = "ec2_sns_publish_role"
+# resource "aws_iam_role" "ec2_role" {
+#   name = "ec2_sns_publish_role"
 
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Action = "sts:AssumeRole",
-        Effect = "Allow",
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      }
-    ]
-  })
+#   assume_role_policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Action = "sts:AssumeRole",
+#         Effect = "Allow",
+#         Principal = {
+#           Service = "ec2.amazonaws.com"
+#         }
+#       }
+#     ]
+#   })
 
   # Attach an inline policy to grant sns:Publish permission for the specific SNS topic
-  inline_policy {
-    name = "sns_publish_policy"
+  # inline_policy {
+  #   name = "sns_publish_policy"
 
-    policy = jsonencode({
-      Version = "2012-10-17",
-      Statement = [
-        {
-          Action   = "sns:Publish",
-          Effect   = "Allow",
-          Resource = aws_sns_topic.disk_space_topic.arn
-        }
-      ]
-    })
-  }
+  #   policy = jsonencode({
+  #     Version = "2012-10-17",
+  #     Statement = [
+  #       {
+  #         Action   = "sns:Publish",
+  #         Effect   = "Allow",
+  #         Resource = aws_sns_topic.disk_space_topic.arn
+  #       }
+  #     ]
+  #   })
+  # }
 
   # Attach an inline policy to allow CloudWatch Logs access
 }
 
 # Attach the AmazonSNSFullAccess policy to the IAM role (for SNS publishing permissions)
-resource "aws_iam_policy_attachment" "ec2_sns_policy_attachment" {
-  name       = "ec2_sns_attachment"
-  policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess" # This policy grants SNS publishing permissions
-  roles      = [aws_iam_role.ec2_role.name]
-}
+# resource "aws_iam_policy_attachment" "ec2_sns_policy_attachment" {
+#   name       = "ec2_sns_attachment"
+#   policy_arn = "arn:aws:iam::aws:policy/AmazonSNSFullAccess" # This policy grants SNS publishing permissions
+#   roles      = [aws_iam_role.ec2_role.name]
+# }
 
 # Create an IAM instance profile
-resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_sns_publish_instance_profile1"
-  role = aws_iam_role.ec2_role.name
-}
+# resource "aws_iam_instance_profile" "ec2_instance_profile" {
+#   name = "ec2_sns_publish_instance_profile1"
+#   role = aws_iam_role.ec2_role.name
+# }
 
 data "aws_ami" "example" {
   most_recent = true
