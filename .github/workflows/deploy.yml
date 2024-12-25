@@ -1,3 +1,152 @@
+# name: Terraform Workflow
+
+# on:
+#   push:
+#     branches:
+#       - feature-*
+#   pull_request:
+#     branches:
+#       - main
+#     types:
+#       - closed 
+#   workflow_dispatch:
+
+# permissions:
+#   id-token: write
+#   contents: read
+#   issues: write
+
+# env:
+#   WORKING_DIRECTORY: ./jenkins
+
+# concurrency:
+#   group: ${{ github.workflow }}
+
+# jobs:
+#   # Checkov Job for Security Scanning
+#   # security:
+#   #   runs-on: ubuntu-latest
+#   #   steps:
+#   #     - name: Checkout code
+#   #       uses: actions/checkout@v3
+
+#   #     - name: Set up Python
+#   #       uses: actions/setup-python@v4
+#   #       with:
+#   #         python-version: '3.x'
+
+#   #     - name: Install Checkov
+#   #       run: |
+#   #         pip install checkov
+
+#   #     - name: Run Checkov to scan for security misconfigurations
+#   #       run: |
+#   #         checkov --directory ${{ env.WORKING_DIRECTORY }}
+
+#   Infra-plan:
+#     runs-on: ubuntu-latest
+#     if: github.event_name == 'push'
+#     # needs: [security]
+#     steps:
+#       # - name: Add Sherwin CA certificates
+#       #   uses: sherwin-williams-co/sherwin-ca-injector-action@v0
+
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       - name: Configure AWS credentials
+#         uses: aws-actions/configure-aws-credentials@v4
+#         with:
+#           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#           aws-region: ${{ secrets.AWS_REGION }}
+
+#       - name: Install Terraform
+#         uses: hashicorp/setup-terraform@v2
+
+#       - name: Configure Git for Module Access
+#         run: |
+#           git config --global url."https://${{ secrets.PAT_GITHUB }}@github.com/".insteadOf "https://github.com/"
+#           aws sts get-caller-identity
+#         env:
+#           PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
+
+#       - name: Install TFLint
+#         run: |
+#           curl -LO https://github.com/terraform-linters/tflint/releases/download/v0.41.0/tflint_linux_amd64.zip
+#           unzip tflint_linux_amd64.zip
+#           sudo mv tflint /usr/local/bin/
+#       - name: Lint Terraform code
+#         run: tflint
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Terraform Init
+#         run: terraform init
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Format Terraform code
+#         run: terraform fmt -recursive
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Check Terraform formatting
+#         run: terraform fmt -check -recursive
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Terraform Validate
+#         run: terraform validate
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Terraform Plan
+#         run: terraform plan -out=tfplan
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Show Terraform Plan
+#         run: terraform show -json tfplan > tfplan.json
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Upload Terraform Plan
+#         uses: actions/upload-artifact@v3
+#         with:
+#           name: tfplan
+#           path: ${{ env.WORKING_DIRECTORY }}/tfplan
+
+#       - name: Plan Success Message
+#         if: success()
+#         run: echo "Terraform Plan succeeded."
+
+#   # Manual approval and apply job
+#   apply:
+#     runs-on: ubuntu-latest
+#     # if: github.event_name == 'pull_request' && github.event.action == 'merged' && github.event.pull_request.merged == true
+#     #if: github.event_name == 'pull_request' && github.event.action == 'closed'
+#     if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+#     needs: Infra-plan
+#     steps:
+#       - name: Debug event
+#         run: |
+#           echo "Event Name: $GITHUB_EVENT_NAME"
+#           echo "Event Action: $GITHUB_EVENT_ACTION"
+#           echo "PR Merged: $GITHUB_EVENT_PULL_REQUEST_MERGED"
+#       # ####- name: Manual Approval
+#       #   uses: trstringer/manual-approval@v1
+#       #   with:
+#       #     secret: ${{ github.TOKEN }}
+#       #     approvers: 'rich-shw, sampsongith'
+#       #     minimum-approvals: 1
+
+#       - name: Terraform Apply
+#         run: terraform apply -auto-approve tfplan
+#         working-directory: ${{ env.WORKING_DIRECTORY }}
+
+#       - name: Notify Team - Success
+#         if: success()
+#         run: echo "Terraform apply was successful."
+
+#       - name: Apply Success Message
+#         if: success()
+#         run: echo "Terraform Apply succeeded."
+
+
 name: Terraform Workflow
 
 on:
@@ -23,34 +172,11 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  # Checkov Job for Security Scanning
-  # security:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v3
-
-  #     - name: Set up Python
-  #       uses: actions/setup-python@v4
-  #       with:
-  #         python-version: '3.x'
-
-  #     - name: Install Checkov
-  #       run: |
-  #         pip install checkov
-
-  #     - name: Run Checkov to scan for security misconfigurations
-  #       run: |
-  #         checkov --directory ${{ env.WORKING_DIRECTORY }}
-
+  # Infra-plan job for planning infrastructure changes
   Infra-plan:
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-    # needs: [security]
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true)
     steps:
-      # - name: Add Sherwin CA certificates
-      #   uses: sherwin-williams-co/sherwin-ca-injector-action@v0
-
       - name: Checkout code
         uses: actions/checkout@v3
 
@@ -68,14 +194,13 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.PAT_GITHUB }}@github.com/".insteadOf "https://github.com/"
           aws sts get-caller-identity
-        env:
-          PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
 
       - name: Install TFLint
         run: |
           curl -LO https://github.com/terraform-linters/tflint/releases/download/v0.41.0/tflint_linux_amd64.zip
           unzip tflint_linux_amd64.zip
           sudo mv tflint /usr/local/bin/
+
       - name: Lint Terraform code
         run: tflint
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -114,25 +239,30 @@ jobs:
         if: success()
         run: echo "Terraform Plan succeeded."
 
-  # Manual approval and apply job
+  # Apply job to apply infrastructure changes
   apply:
     runs-on: ubuntu-latest
-    # if: github.event_name == 'pull_request' && github.event.action == 'merged' && github.event.pull_request.merged == true
-    #if: github.event_name == 'pull_request' && github.event.action == 'closed'
     if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
     needs: Infra-plan
     steps:
       - name: Debug event
         run: |
-          echo "Event Name: $GITHUB_EVENT_NAME"
-          echo "Event Action: $GITHUB_EVENT_ACTION"
-          echo "PR Merged: $GITHUB_EVENT_PULL_REQUEST_MERGED"
-      # ####- name: Manual Approval
-      #   uses: trstringer/manual-approval@v1
-      #   with:
-      #     secret: ${{ github.TOKEN }}
-      #     approvers: 'rich-shw, sampsongith'
-      #     minimum-approvals: 1
+          echo "Event Name: ${{ github.event_name }}"
+          echo "Event Action: ${{ github.event.action }}"
+          echo "PR Merged: ${{ github.event.pull_request.merged }}"
+
+      - name: Download Terraform Plan
+        uses: actions/download-artifact@v3
+        with:
+          name: tfplan
+          path: ${{ env.WORKING_DIRECTORY }}
+
+      - name: Manual Approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers: 'rich-shw, sampsongith'
+          minimum-approvals: 1
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
