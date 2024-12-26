@@ -137,20 +137,6 @@ jobs:
       - name: Plan Success Message
         if: success()
         run: echo "Terraform Plan succeeded."
-
-  # Manual approval and apply job
-  apply:
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
-    needs: Infra-plan
-    steps:
-      # ####- name: Manual Approval
-      #   uses: trstringer/manual-approval@v1
-      #   with:
-      #     secret: ${{ github.TOKEN }}
-      #     approvers: 'rich-shw, sampsongith'
-      #     minimum-approvals: 1
-
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
         working-directory: ${{ env.WORKING_DIRECTORY }}
@@ -162,3 +148,28 @@ jobs:
       - name: Apply Success Message
         if: success()
         run: echo "Terraform Apply succeeded."
+
+  # # Manual approval and apply job
+  # apply:
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request' && github.event.action == 'closed' && github.event.pull_request.merged == true
+  #   needs: Infra-plan
+  #   steps:
+  #     # ####- name: Manual Approval
+  #     #   uses: trstringer/manual-approval@v1
+  #     #   with:
+  #     #     secret: ${{ github.TOKEN }}
+  #     #     approvers: 'rich-shw, sampsongith'
+  #     #     minimum-approvals: 1
+
+  #     - name: Terraform Apply
+  #       run: terraform apply -auto-approve tfplan
+  #       working-directory: ${{ env.WORKING_DIRECTORY }}
+
+  #     - name: Notify Team - Success
+  #       if: success()
+  #       run: echo "Terraform apply was successful."
+
+  #     - name: Apply Success Message
+  #       if: success()
+  #       run: echo "Terraform Apply succeeded."
