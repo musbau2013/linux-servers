@@ -3,7 +3,7 @@
 
 
 # Create an IAM role for the EC2 instance
-resource "aws_iam_role" "ec2_role" {
+resource "aws_iam_role" "ec2_role1" {
   name = "ec2_sns_publish_role"
 
   assume_role_policy = jsonencode({
@@ -92,7 +92,7 @@ resource "aws_instance" "example_instance" {
   ami                  = data.aws_ami.ubuntu-2022.id
   instance_type        = "t2.medium"
   key_name             = "keypair"
-  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  # iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   tags = {
     Name = "prometheus_monitoring"
   }
