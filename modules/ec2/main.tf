@@ -20,42 +20,42 @@ resource "aws_iam_role" "ec2_role1" {
   })
 }
 
-  # Attach an inline policy to grant sns:Publish permission for the specific SNS topic
-  # inline_policy {
-  #   name = "sns_publish_policy"
+# Attach an inline policy to grant sns:Publish permission for the specific SNS topic
+# inline_policy {
+#   name = "sns_publish_policy"
 
-  #   policy = jsonencode({
-  #     Version = "2012-10-17",
-  #     Statement = [
-  #       {
-  #         Action   = "sns:Publish",
-  #         Effect   = "Allow",
-  #         Resource = aws_sns_topic.disk_space_topic.arn
-  #       }
-  #     ]
-  #   })
-  # }
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Action   = "sns:Publish",
+#         Effect   = "Allow",
+#         Resource = aws_sns_topic.disk_space_topic.arn
+#       }
+#     ]
+#   })
+# }
 
-  # Attach an inline policy to allow CloudWatch Logs access
-  # inline_policy {
-  #   name = "cloudwatch_logs_policy"
+# Attach an inline policy to allow CloudWatch Logs access
+# inline_policy {
+#   name = "cloudwatch_logs_policy"
 
-  #   policy = jsonencode({
-  #     Version = "2012-10-17",
-  #     Statement = [
-  #       {
-  #         Action = [
-  #           "logs:CreateLogGroup",
-  #           "logs:CreateLogStream",
-  #           "logs:PutLogEvents",
-  #           "logs:DescribeLogStreams"
-  #         ],
-  #         Effect   = "Allow",
-  #         Resource = "*"
-  #       }
-  #     ]
-  #   })
-  # }
+#   policy = jsonencode({
+#     Version = "2012-10-17",
+#     Statement = [
+#       {
+#         Action = [
+#           "logs:CreateLogGroup",
+#           "logs:CreateLogStream",
+#           "logs:PutLogEvents",
+#           "logs:DescribeLogStreams"
+#         ],
+#         Effect   = "Allow",
+#         Resource = "*"
+#       }
+#     ]
+#   })
+# }
 # }
 
 # # Attach the AmazonSNSFullAccess policy to the IAM role (for SNS publishing permissions)
@@ -96,7 +96,7 @@ resource "aws_instance" "example_instance" {
   tags = {
     Name = "Jenkins_server"
   }
-  
+
 
 }
 

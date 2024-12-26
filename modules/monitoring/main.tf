@@ -179,7 +179,7 @@ resource "aws_cloudwatch_metric_alarm" "memory_utilization_alarm" {
 
 resource "aws_cloudwatch_log_group" "example_log_group" {
   name              = "example-log-group_monitoring" # Replace with your desired log group name
-  retention_in_days = 7                   # Set the desired retention period (in days)
+  retention_in_days = 7                              # Set the desired retention period (in days)
 }
 
 resource "aws_eip" "lb_monitoring" {
