@@ -68,7 +68,7 @@ resource "aws_iam_role" "ec2_role1" {
 # Create an IAM instance profile
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
   name = "ec2_sns_publish_instance_profile1"
-  role = aws_iam_role.ec2_role.name
+  role = aws_iam_role.ec2_role1.name
 }
 
 data "aws_ami" "ubuntu-2022" {
@@ -92,7 +92,7 @@ resource "aws_instance" "example_instance" {
   ami                  = data.aws_ami.ubuntu-2022.id
   instance_type        = "t2.medium"
   key_name             = "keypair"
-  # iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
+  iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   tags = {
     Name = "prometheus_monitoring"
   }
