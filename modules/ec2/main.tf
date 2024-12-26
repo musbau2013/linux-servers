@@ -91,10 +91,10 @@ data "aws_ami" "ubuntu-2022" {
 resource "aws_instance" "example_instance" {
   ami                  = data.aws_ami.ubuntu-2022.id
   instance_type        = "t2.medium"
-  key_name             = "keypair"
+  key_name             = "keypair_new"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
   tags = {
-    Name = "prometheus_monitoring"
+    Name = "Jenkins_server"
   }
   
 
