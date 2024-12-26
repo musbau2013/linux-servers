@@ -89,7 +89,7 @@ data "aws_ami" "ubuntu-2022" {
 
 # Create an EC2 instance with the IAM instance profile
 resource "aws_instance" "example_instance" {
-  ami                  = data.aws_ami.example.id
+  ami                  = data.aws_ami.ubuntu-2022.id
   instance_type        = "t2.medium"
   key_name             = "keypair"
   iam_instance_profile = aws_iam_instance_profile.ec2_instance_profile.name
