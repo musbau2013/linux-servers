@@ -4,7 +4,7 @@
 
 # Create an IAM role for the EC2 instance
 resource "aws_iam_role" "ec2_role1" {
-  name = "ec2_sns_publish_role1"
+  name = "ec2_sns_publish_role3"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -67,7 +67,7 @@ resource "aws_iam_role" "ec2_role1" {
 
 # Create an IAM instance profile
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_sns_publish_instance_profile"
+  name = "ec2_sns_publish_instance_profile32"
   role = aws_iam_role.ec2_role1.name
 }
 
