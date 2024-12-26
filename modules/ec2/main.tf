@@ -67,7 +67,7 @@ resource "aws_iam_role" "ec2_role1" {
 
 # Create an IAM instance profile
 resource "aws_iam_instance_profile" "ec2_instance_profile" {
-  name = "ec2_sns_publish_instance_profile1"
+  name = "ec2_sns_publish_instance_profile"
   role = aws_iam_role.ec2_role1.name
 }
 

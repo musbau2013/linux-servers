@@ -63,29 +63,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@v2
-
-      - name: Render terraform docs inside the README.md and push changes back to PR branch
-        uses: terraform-docs/gh-actions@v1.3.0
-        with:
-          working-dir: ${{ env.WORKING_DIRECTORY }}, ./modules/ec2, ./modules/monitoring
-          output-file: README.md
-          output-method: inject
-          git-push: "true"
-          template: |-
-            <!-- BEGIN_TF_DOCS -->
-            # Test tf11 basic
-
-            ## Verify
-
-            Should use the template defined instead of the default
-            Should inject the table under usage
-
-            # Usage
-
-            {{ .Content }}
-            <!-- END_TF_DOCS -->
-          indention: 3         
+        uses: hashicorp/setup-terraform@v2       
 
       - name: Configure Git for Module Access
         run: |
@@ -148,6 +126,28 @@ jobs:
       - name: Apply Success Message
         if: success()
         run: echo "Terraform Apply succeeded."
+        
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: ${{ env.WORKING_DIRECTORY }}, ./modules/ec2, ./modules/monitoring
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+          template: |-
+            <!-- BEGIN_TF_DOCS -->
+            # Test tf11 basic
+
+            ## Verify
+
+            Should use the template defined instead of the default
+            Should inject the table under usage
+
+            # Usage
+
+            {{ .Content }}
+            <!-- END_TF_DOCS -->
+          indention: 3  
 
   # # Manual approval and apply job
   # apply:
