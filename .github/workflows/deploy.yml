@@ -44,7 +44,7 @@ jobs:
   #       run: |
   #         checkov --directory ${{ env.WORKING_DIRECTORY }}
 
-  Infra-plan:
+  Infra-plan-apply:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     # needs: [security]
