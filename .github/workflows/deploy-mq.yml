@@ -4,7 +4,7 @@ run-name: Terraform-testing-dispatch
 on:
   workflow_dispatch:
     inputs:
-      environment:
+      environment: ${{ inputs.environment }}
         description: "Select the environment (e.g., non-prod, staging, prod)"
         required: true
         # default: "non-prod"
