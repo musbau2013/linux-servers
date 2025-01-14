@@ -31,11 +31,11 @@ concurrency:
   group: ${{ github.workflow }}
 
 jobs:
-  security:
-    name: security-workflows/terraform
-    uses: sherwin-williams-co/security-workflows/.github/workflows/terraform.yaml@v0
-    secrets: 
-      DYNATRACE_TOKEN: ${{ secrets.DYNATRACE_TOKEN }}
+  # security:
+  #   name: security-workflows/terraform
+  #   uses: sherwin-williams-co/security-workflows/.github/workflows/terraform.yaml@v0
+  #   secrets: 
+  #     DYNATRACE_TOKEN: ${{ secrets.DYNATRACE_TOKEN }}
 
   infra-planning-approval:
     name: Infra Planning and Approval

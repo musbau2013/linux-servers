@@ -7,11 +7,20 @@ on:
       environment:
         description: "Select the environment (e.g., non-prod, staging, prod)"
         required: true
-        default: "non-prod"
+        type: choice
+        options:
+          - dev
+          - staging
+          - prod
       folder:
         description: "Terraform folder to deploy"
         required: true
-        default: "./Infra/environment/non-prod"
+        # default: "./Infra/environment/non-prod"
+        type: choice
+        options:
+          - "./modules/ec2/"
+          - "./Infra/environment/prod"
+          - "./Infra/environment/uat"
 
 permissions:
   id-token: write
