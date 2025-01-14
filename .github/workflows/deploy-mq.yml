@@ -18,7 +18,7 @@ on:
         # default: "./Infra/environment/non-prod"
         type: choice
         options:
-          - "./Infra/environment/non-prod"
+          - "./modules/ec2/"
           - "./Infra/environment/prod"
           - "./Infra/environment/uat"
 
