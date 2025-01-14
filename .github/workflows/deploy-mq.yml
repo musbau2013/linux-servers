@@ -1,4 +1,4 @@
-name: Terraform Workflow
+name: Terraform-testing-dispatch
 run-name: Terraform-testing-dispatch
 
 on:
