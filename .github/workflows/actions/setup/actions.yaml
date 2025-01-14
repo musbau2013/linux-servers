@@ -1,0 +1,25 @@
+name: 'Setup Project'
+inputs:
+  aws_region:
+    description: AWS Region
+    required: true
+    type: string
+  role_arn:
+    description: role arn used to deploy sam, specific to an account
+    required: true
+    type: string
+
+runs:
+  using: composite
+  steps:
+    - name: Add Sherwin CA Certs
+      id: certs
+      uses: sherwin-williams-co/sherwin-ca-injector-action@v0
+
+    - name: Configure other AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-region: ${{ inputs.aws_region }}
+        role-to-assume: ${{ inputs.role_arn }}
+        # role-session-name: retail-services-sam-github-action
+        udience: sts.amazonaws.com
