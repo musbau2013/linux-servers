@@ -4,10 +4,14 @@ run-name: Terraform-testing-dispatch
 on:
   workflow_dispatch:
     inputs:
-      environment: 
+      environment:
         description: "Select the environment (e.g., non-prod, staging, prod)"
         required: true
-        # default: "non-prod"
+        type: choice
+        options:
+          - non-prod
+          - staging
+          - prod
       folder:
         description: "Terraform folder to deploy"
         required: true
