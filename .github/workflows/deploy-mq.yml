@@ -16,6 +16,11 @@ on:
         description: "Terraform folder to deploy"
         required: true
         # default: "./Infra/environment/non-prod"
+        type: choice
+        options:
+          - "./Infra/environment/non-prod"
+          - "./Infra/environment/prod"
+          - "./Infra/environment/uat"
 
 permissions:
   id-token: write
