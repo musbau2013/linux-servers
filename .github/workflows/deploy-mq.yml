@@ -7,11 +7,11 @@ on:
       environment:
         description: "Select the environment (e.g., non-prod, staging, prod)"
         required: true
-        default: "non-prod"
+        # default: "non-prod"
       folder:
         description: "Terraform folder to deploy"
         required: true
-        default: "./Infra/environment/non-prod"
+        # default: "./Infra/environment/non-prod"
 
 permissions:
   id-token: write
