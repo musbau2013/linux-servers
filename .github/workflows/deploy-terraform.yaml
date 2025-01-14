@@ -1,5 +1,5 @@
-ame: Terraform Workflow
-run-name: Testing workflow_dispatch
+name: Terraform Workflow
+run-name: Testing_workflow_dispatch
 
 on:
   workflow_dispatch:
