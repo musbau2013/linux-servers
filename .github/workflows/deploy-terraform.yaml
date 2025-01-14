@@ -19,7 +19,7 @@ on:
         type: choice
         options:
           - "./modules/ec2/"
-          - "./Infra/environment/prod"
+          - "./modules/monitoring/"
           - "./Infra/environment/uat"
 
 permissions:
