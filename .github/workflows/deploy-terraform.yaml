@@ -20,7 +20,7 @@ on:
         options:
           - "./modules/ec2/"
           - "./modules/monitoring/"
-          - "./Infra/environment/uat"
+          - "./Infra/environment/non-prod/dev"
 
 permissions:
   id-token: write
@@ -44,6 +44,14 @@ jobs:
     environment: ${{ github.event.inputs.environment }}
 
     steps:
+      - name: Render terraform docs inside the README.md and push changes back to PR branch
+        uses: terraform-docs/gh-actions@v1.3.0
+        with:
+          working-dir: ${{ env.WORKING_DIRECTORY }}, ./modules/ec2, ./modules/monitoring
+          output-file: README.md
+          output-method: inject
+          git-push: "true"
+          
       - name: Checkout
         uses: actions/checkout@v3
 

@@ -1,0 +1,104 @@
+
+
+# Terraform OpenSearch Module
+
+This Terraform module sets up an OpenSearch domain along with associated IAM roles for Snowflake, Lambda, and Glue services.
+
+## Overview
+
+The module creates an OpenSearch domain and configures the required resources, including IAM roles and policies for Snowflake, Lambda, and Glue services. 
+
+This module supports both standard and UltraWarm OpenSearch configurations, and includes IAM roles with necessary policies for Snowflake, Lambda, and Glue.
+
+## Modules
+
+- **opensearch**: This module manages the creation of OpenSearch domains and configuration of the necessary security groups and access control.
+- **snowflake-iam-role**: This module creates an IAM role for Snowflake with associated trust policies and inline policies.
+- **lambda-iam-role**: This module creates an IAM role for Lambda with associated trust policies and inline policies.
+- **glue-iam-role**: This module creates an IAM role for AWS Glue with associated trust policies and inline policies.
+
+## Inputs
+
+The following inputs are required for the module to operate correctly:
+
+### `opensearch` Module Inputs
+
+| Input Name          | Description                                                                 | Type   | Default |
+|---------------------|-----------------------------------------------------------------------------|--------|---------|
+| `region`            | The AWS region where resources will be created.                              | string | `"us-east-2"` |
+| `environment`       | The environment label (e.g., DEV, PROD).                                    | string | `"DEV"` |
+| `account_id`        | The AWS account ID where resources will be created.                         | string | `"533267000625"` |
+| `vpc_id`            | The VPC ID where OpenSearch domains will reside.                            | string | `"vpc-0fa3f85631c23a33a"` |
+| `security_group_id` | The security group ID associated with the OpenSearch domains.               | string | `"sg-03f1e7cf36e1e6614"` |
+| `cost_center`       | The cost center associated with the resources.                              | string | `"A100-800059"` |
+| `work_group`        | The work group name.                                                        | string | `"sales-mobius"` |
+| `portfolio`         | The portfolio name.                                                         | string | `"Sales"` |
+| `program`           | The program name associated with the resources.                             | string | `"Insight-CPR and Lead Gen DB"` |
+| `subnet_names`      | List of subnet names for the OpenSearch domain.                             | list   | `["data-nonprod-use2b-sbnet17", "data-nonprod-use2a-sbnet16", "data-nonprod-use2c-sbnet18"]` |
+| `master_user_name`  | The master username for OpenSearch.                                          | string | `"stech/mobius/opensearch/dev"` |
+| `master_key`        | The master key for OpenSearch authentication.                               | string | `"opensearch.net.http.auth.user"` |
+| `value_key`         | The key used for authentication.                                            | string | `"opensearch.net.http.auth.pass"` |
+| `warm_enabled`      | Whether to enable UltraWarm for OpenSearch domains.                          | bool   | `true` |
+| `warm_type`         | The type of UltraWarm instance.                                              | string | `"ultrawarm1.large.search"` |
+| `warm_count`        | The number of UltraWarm instances to create.                                 | number | `3` |
+| `domains`           | Map of domain configurations, including instance types, volumes, and tags.  | map    | - |
+
+### `snowflake-iam-role` Module Inputs
+
+| Input Name               | Description                                                                 | Type   | Default |
+|--------------------------|-----------------------------------------------------------------------------|--------|---------|
+| `role_name`              | The name of the IAM role for Snowflake.                                      | string | `"sales-mobius-nonprod-snowflake-role"` |
+| `policy_folder`          | Folder that contains policies for Snowflake IAM role.                        | string | `"snowflake"` |
+| `assume_role_policy_file`| The trust policy for the Snowflake IAM role.                                 | string | `"snowflake-trust-policy.json"` |
+| `managed_policy_arns`    | List of ARNs for managed policies to attach to the role.                     | list   | `[]` |
+| `inline_policy_files`    | Map of inline policies for the role.                                         | map    | `{ "snowflake-access-policy" = "snowflake-custom-policy.json" }` |
+
+### `lambda-iam-role` Module Inputs
+
+| Input Name               | Description                                                                 | Type   | Default |
+|--------------------------|-----------------------------------------------------------------------------|--------|---------|
+| `role_name`              | The name of the IAM role for Lambda.                                         | string | `"stech-mobius-nonprod-lambda-role"` |
+| `policy_folder`          | Folder that contains policies for Lambda IAM role.                           | string | `"lambda"` |
+| `assume_role_policy_file`| The trust policy for the Lambda IAM role.                                    | string | `"lambda-trust-policy.json"` |
+| `managed_policy_arns`    | List of ARNs for managed policies to attach to the role.                     | list   | `[ "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole", "arn:aws:iam::aws:policy/service-role/AmazonS3ObjectLambdaExecutionRolePolicy", "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole" ]` |
+| `inline_policy_files`    | Map of inline policies for the role.                                         | map    | `{ "lambda-s3-policy" = "lambda-custom-policy.json", "lambda-execute-policy" = "lambda-another-policy.json" }` |
+
+### `glue-iam-role` Module Inputs
+
+| Input Name               | Description                                                                 | Type   | Default |
+|--------------------------|-----------------------------------------------------------------------------|--------|---------|
+| `role_name`              | The name of the IAM role for Glue.                                           | string | `"sales-ex-glue-service-role"` |
+| `policy_folder`          | Folder that contains policies for Glue IAM role.                             | string | `"glue"` |
+| `assume_role_policy_file`| The trust policy for the Glue IAM role.                                      | string | `"trust-policy.json"` |
+| `managed_policy_arns`    | List of ARNs for managed policies to attach to the role.                     | list   | `[ "arn:aws:iam::aws:policy/AmazonOpenSearchIngestionFullAccess", "arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole" ]` |
+| `inline_policy_files`    | Map of inline policies for the role.                                         | map    | `{ "glue-secrets-policy" = "custom-policy.json", "glue-s3-policy" = "another-policy.json" }` |
+
+## Outputs
+
+The module does not output any values directly. Outputs are managed within the respective modules that are referenced.
+
+## Usage
+
+To use this module, you must include it in your Terraform configuration. For example:
+
+```hcl
+module "opensearch" {
+  source = "git::https://github.com/sherwin-williams-co/shwaws-cloudops-terraform-opensearch-module.git//opensearch?ref=v1.0.7"
+  region = "us-east-2"
+  # Other parameters here...
+}
+
+module "snowflake-iam-role" {
+  source = "git::https://github.com/sherwin-williams-co/shwaws-cloudops-terraform-iam-roles-modules.git//iam-roles?ref=v1.0.7"
+  # IAM role configurations here...
+}
+
+module "lambda-iam-role" {
+  source = "git::https://github.com/sherwin-williams-co/shwaws-cloudops-terraform-iam-roles-modules.git//iam-roles?ref=v1.0.7"
+  # IAM role configurations here...
+}
+
+module "glue-iam-role" {
+  source = "git::https://github.com/sherwin-williams-co/shwaws-cloudops-terraform-iam-roles-modules.git//iam-roles?ref=v1.0.7"
+  # IAM role configurations here...
+}
